@@ -33,7 +33,7 @@ def water_density_calculator(T, P, density=True):
     water density in g/cm3 or molar volume in cm3/mol
     """
 
-    # check assumptions
+    # check model assumptions
     if T < 100 or T > 1600:
         raise ValueError('The temperature provided is out of the safe range for the model (100 - 1600)')
     elif P < 0.001 or P > 5:
@@ -43,12 +43,12 @@ def water_density_calculator(T, P, density=True):
     P = P * 10
     T = T + 273.15
 
-    # experimentally derived constans from Table 1 in Holland and Powell (1991)
+    # set experimentally derived constans from Table 1 in Holland and Powell (1991)
     P0 = 2.0
     c = -3.025650e-2 - 5.343144e-6 * T
     d = -3.2297554e-3 + 2.2215221e-6 * T
 
-    # get molar volume in cm3 per mol using the MKR equation
+    # estimate molar volume in cm3 per mol using the MKR equation
     if P > P0:
         V_mrk = get_MKR_volume(T, P)
         V = V_mrk + c * np.sqrt((P - P0) + d * (P - P0))
@@ -62,9 +62,9 @@ def water_density_calculator(T, P, density=True):
 
 
 def get_MKR_volume(T, P, epsilon=0.0001, limit_guesses=100):
-    """ Modified Redlich-Kwong (MKR) is an empirically derived equation
-    that estimate accurately the molar volume of water for pressures up
-    to 5 GPa (50 kbar) in the T range 100-1400 deg C. The model proposed
+    """ The Modified Redlich-Kwong (MKR) equation is an empirically derived
+    equation that estimate accurately the molar volume of water for pressures
+    up to 5 GPa (50 kbar) in the T range 100-1400 deg C. The model proposed
     here is based on works by Redlich and Kwong (1949), Halbach and
     Chatterjee (1982) and Holland and Powell (1991). This function uses
     a bisection search algorithm to find the solution to the MKR equation.
@@ -102,7 +102,7 @@ def get_MKR_volume(T, P, epsilon=0.0001, limit_guesses=100):
 
     # estimate a and b constants. See Table 1 in Holland and Powell (1991)
     if T <= 673:
-        # a = 1113.4 + 5.8487 * (673 - T) - 2.1370e-2 * (673 - T)**2 + 6.8133e-5 * (673 - T)**3
+        #a = 1113.4 + 5.8487 * (673 - T) - 2.1370e-2 * (673 - T)**2 + 6.8133e-5 * (673 - T)**3
         a = 1113.4 + -0.88517 * (673 - T) + 4.5300e-3 * (673 - T)**2 - 1.3183e-5 * (673 - T)**3
     else:
         a = 1113.4 - 0.22291 * (T - 673) - 3.8022e-4 * (T - 673)**2 + 1.7791e-7 * (T - 673)**3
